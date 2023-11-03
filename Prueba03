@@ -1,0 +1,9 @@
+from pysheds.grid import Grid
+
+# Instantiate grid from raster
+grid = Grid.from_raster('datos/dem.tif')
+dem = grid.read_raster('datos/dem.tif')
+
+# Resolve flats and compute flow directions
+inflated_dem = grid.resolve_flats(dem)
+fdir = grid.flowdir(inflated_dem)
