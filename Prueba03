@@ -1,9 +1,27 @@
 from pysheds.grid import Grid
-
 # Instantiate grid from raster
 grid = Grid.from_raster('datos/dem.tif')
 dem = grid.read_raster('datos/dem.tif')
-
 # Resolve flats and compute flow directions
 inflated_dem = grid.resolve_flats(dem)
 fdir = grid.flowdir(inflated_dem)
+
+# Compute accumulation
+acc = grid.accumulation(fdir)
+
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+
+fig, ax = plt.subplots(figsize=(8,6))
+fig.patch.set_alpha(0)
+plt.grid('on', zorder=0)
+im = ax.imshow(acc, extent=grid.extent, zorder=2,
+               cmap='cubehelix',
+               norm=colors.LogNorm(1, acc.max()),
+               interpolation='bilinear')
+plt.colorbar(im, ax=ax, label='Upstream Cells')
+plt.title('Acumulacion rios', size=16)
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+plt.tight_layout()
+
